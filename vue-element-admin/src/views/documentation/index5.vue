@@ -2,16 +2,22 @@
   <div>
   <el-container>
     <el-main style="position: relative;border-left:1px solid #28acc6;">
+      <!--顶部-->
       <div style="border:1px solid #28acc6;height: 40px;border-left-width:0px;border-bottom-width:0px;">
         <el-row style="padding-top: 8px;">
-          <span class="btn_def" style="margin-left:20px;" @click="handleCreate">+ 增仓</span>
-          <span class="btn_def" style="margin-left:5px;" @click="handleCreate">- 减仓</span>
+          <div style="display: inline-block;padding-right:25px;border-right:1px solid #ccc;margin-right: 15px;height: 22px; ">
+            <span class="btn_def" style="margin-left:20px;" @click="handleCreate">+ 增仓</span>
+            <span class="btn_def" style="margin-left:5px;">修改</span>
+          </div>
+          <span class="btn_def" style="margin-left:5px;">± 融资</span>
           <span v-if="!indent" class="btn_indent"  @click="indent=true"> >>缩进</span>
           <span v-if="indent" class="btn_indent"  @click="indent=false"> <<缩进</span>
         </el-row>
       </div>
-      <div style="border:1px solid #28acc6;height: 300px;border-left-width:0px;border-bottom-width:0px;padding: 20px;">
-        <div style="border:2px solid #28acc6;">
+      <!--第一部分-->
+      <div style="border:1px solid #28acc6;border-left-width:0px;border-bottom-width:0px;padding: 20px;">
+        <div style="border:2px solid #28acc6;position: relative;padding-top: 10px;">
+          <span class="label_span" >基本账户</span>
           <el-table
             ref="singleTable"
             :data="tableData"
@@ -27,143 +33,348 @@
             <el-table-column
               property="num"
               label="品种代码"
-              width="80"
+              width="100"
               align="center">
             </el-table-column>
             <el-table-column
               property="name"
               label="品种名称"
-              width="100"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              property="ave"
-              label="平均成本"
-              width="80"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              property="act"
-              label="市值"
-              width="80"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              property="profit"
-              label="浮动盈亏"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              property="percent"
-              label="占固收市值比例"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              property="order"
-              label="减仓顺序"
-              align="center">
-            </el-table-column>
-          </el-table>
-        </div>
-      </div>
-      <div style="border:1px solid #28acc6;height: 300px;border-left-width:0px;padding: 20px;">
-        <div style="border:2px solid #28acc6;">
-          <el-table
-            ref="singleTable"
-            :data="tableData"
-            highlight-current-row
-            @current-change="handleCurrentChange"
-            style="width: 100%">
-            <el-table-column
-              type="index"
-              label="序号"
-              width="50"
+              width="120"
               align="center">
             </el-table-column>
             <el-table-column
               property="num"
-              label="交易类型"
+              label="拟增仓数量"
+              width="120"
               align="center">
             </el-table-column>
             <el-table-column
-              property="name"
-              label="成交时间"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              property="ave"
-              label="到期时间"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              property="act"
-              label="成交价格"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              property="profit"
-              label="手续费"
-              align="center">
+              property="percent"
+              label="股票资金池占比"
+              align="left">
             </el-table-column>
           </el-table>
         </div>
       </div>
+      <!--第二部分-->
+      <div style="border:1px solid #28acc6;border-left-width:0px;padding: 20px;">
+        <!--增仓策略-->
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <div class="form_box" style="border: 2px solid #28acc6;position: relative;padding: 15px 18px;">
+              <span class="label_span" >买单策略</span>
+              <el-form label-width="90px" label-position="left">
+                <el-form-item label="下单策略:">
+                   <span style="margin-right: 30px;">底部分形</span>
+                   <span style="margin-right: 30px;">5分钟</span>
+                   <span>交易量</span>
+                </el-form-item>
+                <el-form-item label="盘口策略:">
+                  <span style="margin-right: 30px;"></span>
+                  <span style="margin-right: 30px;"></span>
+                  <span></span>
+                </el-form-item>
+                <el-form-item label="滑点策略:">
+                  <span style="margin-right: 30px;">区间策略</span>
+                  <span style="margin-right: 30px;">[-0.02, 0.02]</span>
+                  <span></span>
+                </el-form-item>
+              </el-form>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="form_box" style="border: 2px solid #28acc6;position: relative;padding: 15px 18px;">
+              <span class="label_span" >增仓策略</span>
+              <el-form label-width="120px" label-position="left">
+                <el-form-item label="日期:">
+                  <span style="margin-right: 30px;">2018-11-01</span>
+                  <span style="margin-right: 30px;"></span>
+                  <span></span>
+                </el-form-item>
+                <el-form-item label="时间:">
+                  <span style="margin-right: 30px;">开盘后</span>
+                  <span style="margin-right: 30px;">10分钟内</span>
+                  <span></span>
+                </el-form-item>
+                <el-form-item label="增仓顺序:">
+                  <span style="margin-right: 30px;">1</span>
+                  <span style="margin-right: 30px;"></span>
+                  <span></span>
+                </el-form-item>
+              </el-form>
+            </div>
+          </el-col>
+        </el-row>
+
+
+      </div>
+
       <div style="position: absolute;top:290px;right:0px;">
         <span class="fix_btn">固定收益<span class="point">12</span></span>
         <span class="fix_btn" style="border-top-width:0px;">股票<span class="point">3</span></span>
       </div>
+
       <!--增仓弹窗-->
-      <el-dialog v-if="aa" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-        <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="180px" style="width: 400px; margin-left:50px;">
-          <el-form-item label="*拟增仓品种：" prop="type">
-            <input class="input_line" style="display: inline-block;" value="000001"/>
-            <el-select v-model="temp.type" class="filter-item" placeholder="请选择银行" style="width: 120px;top:-4px;margin-left: 6px;" size="mini">
-              <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="*增仓顺序：">
-            <input class="input_line" style="display: inline-block;width: 50px!important;" value="01"/>
-          </el-form-item>
-          <el-form-item label="*占固收资产市值比例：">
-            <input class="input_line" style="display: inline-block;width: 50px!important;" value="50"/>%
-            <span style="margin-left: 10px;">5000股</span>
-            <span style="margin-left: 10px;">50手</span>
-          </el-form-item>
-          <el-form-item label="*执行开始日期：">
-            <el-date-picker
-              v-model="temp.date"
-              type="date"
-              placeholder="选择日期"
-              size="mini"
-              style="width: 210px;">
-            </el-date-picker>
-          </el-form-item>
-        </el-form>
+      <el-dialog v-if="false" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+
+        <el-row :gutter="0">
+          <el-col :span="16">
+            <div class="form_box" style="border: 2px solid #28acc6;position: relative;padding: 15px 0px;">
+              <span class="label_span" >基本信息</span>
+              <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="140px" style="width: 400px; margin-left:20px;">
+                <el-form-item label="*拟增仓品种：" prop="type">
+                  <input class="input_line" style="display: inline-block;" value="000001"/>
+                  <span style="margin-left: 10px;">平安银行</span>
+                  <!--<el-select v-model="temp.type" class="filter-item" placeholder="请选择银行" style="width: 120px;top:-4px;margin-left: 6px;" size="mini">
+                    <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
+                  </el-select>-->
+                </el-form-item>
+                <el-form-item label="*最大可买数量：">
+                  <span style="margin-left: 10px;">1000000股</span>
+                  <span style="margin-left: 10px;">1000手</span>
+                </el-form-item>
+                <el-form-item label="*占股票市值比例：">
+                  <input class="input_line" style="display: inline-block;width: 50px!important;" value="50"/>%
+                  <span style="margin-left: 10px;">5000股</span>
+                  <span style="margin-left: 10px;">50手</span>
+                </el-form-item>
+              </el-form>
+            </div>
+          </el-col>
+          <el-col :span="8">
+            <div class="form_box" style="position: relative;padding: 10px 30px;">
+              策略箱：
+              <span class="border_btn">强市策略</span>
+            </div>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20" style="margin-top: 20px;">
+          <el-col :span="12">
+            <div class="form_box" style="border: 2px solid #28acc6;position: relative;padding: 15px 18px;">
+              <span class="label_span" >买单策略</span>
+              <el-form label-width="90px" label-position="left">
+                <el-form-item label="下单策略:">
+                  <span style="margin-right: 30px;">底部分形</span>
+                  <span style="margin-right: 30px;">5分钟</span>
+                  <span>交易量</span>
+                </el-form-item>
+                <el-form-item label="盘口策略:">
+                  <span style="margin-right: 30px;"></span>
+                  <span style="margin-right: 30px;"></span>
+                  <span></span>
+                </el-form-item>
+                <el-form-item label="滑点策略:">
+                  <span style="margin-right: 30px;">区间策略</span>
+                  <span style="margin-right: 30px;">[-0.02～0.02]</span>
+                  <span></span>
+                </el-form-item>
+              </el-form>
+            </div>
+          </el-col>
+
+          <el-col :span="12">
+            <div class="form_box" style="border: 2px solid #28acc6;position: relative;padding: 15px 18px;">
+              <span class="label_span" >增仓策略</span>
+              <el-form label-width="90px" label-position="left">
+                <el-form-item label="日期:">
+                  <span style="margin-right: 30px;">2018-11-01</span>
+                  <span style="margin-right: 30px;"></span>
+                  <span></span>
+                </el-form-item>
+                <el-form-item label="时间:">
+                  <span style="margin-right: 30px;">开盘后</span>
+                  <span style="margin-right: 30px;">10分钟内</span>
+                  <span></span>
+                </el-form-item>
+                <el-form-item label="增仓顺序:">
+                  <span style="margin-right: 30px;">2</span>
+                  <span style="margin-right: 30px;"></span>
+                  <span></span>
+                </el-form-item>
+              </el-form>
+            </div>
+          </el-col>
+        </el-row>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">{{ $t('table.cancel') }}</el-button>
           <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">{{ $t('table.confirm') }}</el-button>
         </div>
       </el-dialog>
-      <!--减仓弹窗-->
-      <el-dialog v-if="!aa" :title="textMap2[dialogStatus]" :visible.sync="dialogFormVisible">
-        <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="180px" style="width: 400px; margin-left:50px;">
-          <el-form-item label="*拟减仓品种：" prop="type">
-            <input class="input_line" style="display: inline-block;" value="000001"/>
-            <span style="margin-left: 20px;">平安银行</span>
-          </el-form-item>
-          <el-form-item label="*减仓顺序：">
-            <input class="input_line" style="display: inline-block;width: 50px!important;" value="01"/>
-          </el-form-item>
-          <el-form-item label="*执行开始日期：">
-            <el-date-picker
-              v-model="temp.date"
-              type="date"
-              placeholder="选择日期"
-              size="mini"
-              style="width: 210px;">
-            </el-date-picker>
-          </el-form-item>
-        </el-form>
+      <!--修改弹窗-->
+      <el-dialog v-if="false" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+
+        <el-row :gutter="0">
+          <el-col :span="16">
+            <div class="form_box" style="border: 2px solid #28acc6;position: relative;padding: 15px 0px;">
+              <span class="label_span" >基本信息</span>
+              <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="140px" style="width: 400px; margin-left:20px;">
+                <el-form-item label="*拟增仓品种：" prop="type">
+                  <input class="input_line" style="display: inline-block;" value="000001"/>
+                  <span style="margin-left: 10px;">平安银行</span>
+                  <!--<el-select v-model="temp.type" class="filter-item" placeholder="请选择银行" style="width: 120px;top:-4px;margin-left: 6px;" size="mini">
+                    <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
+                  </el-select>-->
+                </el-form-item>
+                <el-form-item label="*占股票市值比例：">
+                  <input class="input_line" style="display: inline-block;width: 50px!important;" value="50"/>%
+                  <span style="margin-left: 10px;">5000股</span>
+                  <span style="margin-left: 10px;">50手</span>
+                </el-form-item>
+              </el-form>
+            </div>
+          </el-col>
+          <el-col :span="8">
+            <div class="form_box" style="position: relative;padding: 10px 30px;">
+              策略箱：
+              <span class="border_btn">强市策略</span>
+            </div>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20" style="margin-top: 20px;">
+          <el-col :span="12">
+            <div class="form_box" style="border: 2px solid #28acc6;position: relative;padding: 15px 18px;">
+              <span class="label_span" >买单策略</span>
+              <el-form label-width="90px" label-position="left">
+                <el-form-item label="下单策略:">
+                  <span style="margin-right: 30px;">底部分形</span>
+                  <span style="margin-right: 30px;">5分钟</span>
+                  <span>交易量</span>
+                </el-form-item>
+                <el-form-item label="盘口策略:">
+                  <span style="margin-right: 30px;"></span>
+                  <span style="margin-right: 30px;"></span>
+                  <span></span>
+                </el-form-item>
+                <el-form-item label="滑点策略:">
+                  <span style="margin-right: 30px;">区间策略</span>
+                  <span style="margin-right: 30px;">[-0.02～0.02]</span>
+                  <span></span>
+                </el-form-item>
+              </el-form>
+            </div>
+          </el-col>
+
+          <el-col :span="12">
+            <div class="form_box" style="border: 2px solid #28acc6;position: relative;padding: 15px 18px;">
+              <span class="label_span" >增仓策略</span>
+              <el-form label-width="90px" label-position="left">
+                <el-form-item label="日期:">
+                  <span style="margin-right: 30px;">2018-11-01</span>
+                  <span style="margin-right: 30px;"></span>
+                  <span></span>
+                </el-form-item>
+                <el-form-item label="时间:">
+                  <span style="margin-right: 30px;">开盘后</span>
+                  <span style="margin-right: 30px;">10分钟内</span>
+                  <span></span>
+                </el-form-item>
+                <el-form-item label="增仓顺序:">
+                  <span style="margin-right: 30px;">2</span>
+                  <span style="margin-right: 30px;"></span>
+                  <span></span>
+                </el-form-item>
+              </el-form>
+            </div>
+          </el-col>
+        </el-row>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">{{ $t('table.cancel') }}</el-button>
+          <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">{{ $t('table.confirm') }}</el-button>
+        </div>
+      </el-dialog>
+      <!--融资弹窗-->
+      <el-dialog v-if="true" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+
+        <el-row :gutter="0">
+          <el-col :span="16">
+            <div class="form_box" style="border: 2px solid #28acc6;position: relative;padding: 15px 0px;height: 80px;">
+              <span class="label_span" >基本信息</span>
+              <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="140px" style="width: 400px; margin-left:20px;">
+                <el-form-item label="*拟融资增仓品种：" prop="type">
+                  <input class="input_line" style="display: inline-block;" value="000001"/>
+                  <span style="margin-left: 10px;">平安银行</span>
+                  <!--<el-select v-model="temp.type" class="filter-item" placeholder="请选择银行" style="width: 120px;top:-4px;margin-left: 6px;" size="mini">
+                    <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
+                  </el-select>-->
+                </el-form-item>
+              </el-form>
+            </div>
+          </el-col>
+          <el-col :span="8">
+            <div class="form_box" style="position: relative;padding: 10px 30px;height: 80px;">
+              策略箱：
+              <span class="border_btn">强市策略</span>
+            </div>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20" style="margin-top: 20px;">
+          <el-col :span="24">
+            <div class="form_box" style="border: 2px solid #28acc6;position: relative;padding: 15px 18px;height:80px;">
+              <span class="label_span" >杠杆策略</span>
+              <el-form label-width="120px" label-position="left">
+                <el-form-item label="资金最大杠杆：">
+                  <span style="margin-left: 10px;">1000000股</span>
+                  <span style="margin-left: 10px;">1000手</span>
+                </el-form-item>
+                <el-form-item label="占杠杆池比例：">
+                  <input class="input_line" style="display: inline-block;width: 50px!important;" value="50"/>%
+                  <span style="margin-left: 10px;">5000股</span>
+                  <span style="margin-left: 10px;">50手</span>
+                </el-form-item>
+              </el-form>
+            </div>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20" style="margin-top: 20px;">
+          <el-col :span="12">
+            <div class="form_box" style="border: 2px solid #28acc6;position: relative;padding: 15px 18px;">
+              <span class="label_span" >买单策略</span>
+              <el-form label-width="90px" label-position="left">
+                <el-form-item label="下单策略:">
+                  <span style="margin-right: 30px;">底部分形</span>
+                  <span style="margin-right: 30px;">5分钟</span>
+                  <span>交易量</span>
+                </el-form-item>
+                <el-form-item label="盘口策略:">
+                  <span style="margin-right: 30px;"></span>
+                  <span style="margin-right: 30px;"></span>
+                  <span></span>
+                </el-form-item>
+                <el-form-item label="滑点策略:">
+                  <span style="margin-right: 30px;">区间策略</span>
+                  <span style="margin-right: 30px;">[-0.02～0.02]</span>
+                  <span></span>
+                </el-form-item>
+              </el-form>
+            </div>
+          </el-col>
+
+          <el-col :span="12">
+            <div class="form_box" style="border: 2px solid #28acc6;position: relative;padding: 15px 18px;">
+              <span class="label_span" >增仓策略</span>
+              <el-form label-width="90px" label-position="left">
+                <el-form-item label="日期:">
+                  <span style="margin-right: 30px;">2018-11-01</span>
+                  <span style="margin-right: 30px;"></span>
+                  <span></span>
+                </el-form-item>
+                <el-form-item label="时间:">
+                  <span style="margin-right: 30px;">开盘后</span>
+                  <span style="margin-right: 30px;">10分钟内</span>
+                  <span></span>
+                </el-form-item>
+                <el-form-item label="增仓顺序:">
+                  <span style="margin-right: 30px;">2</span>
+                  <span style="margin-right: 30px;"></span>
+                  <span></span>
+                </el-form-item>
+              </el-form>
+            </div>
+          </el-col>
+        </el-row>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">{{ $t('table.cancel') }}</el-button>
           <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">{{ $t('table.confirm') }}</el-button>
@@ -197,7 +408,7 @@ const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
 }, {})
 
 export default {
-  name: 'index5',
+  name: 'index6',
   data() {
     return {
       temp: {
@@ -216,11 +427,6 @@ export default {
         update: 'Edit',
         create: '增仓'
       },
-      textMap2: {
-        update: 'Edit',
-        create: '减仓'
-      },
-      aa:true,
       dialogPvVisible: false,
       calendarTypeOptions,
       indent:true,
@@ -432,5 +638,55 @@ export default {
 .el-form-item{
   margin-bottom: 5px;
 }
+.form_box{
+  height: 110px;
+}
+.form_box .el-form-item{
+  margin-bottom: 0px;
+  line-height: 20px;
+
+}
+
+.label_span{
+  position: absolute;
+  top:-12px;
+  left:8px;
+  z-index: 1;
+  background-color: #fff;
+  padding: 0 8px;
+}
 </style>
 
+<style>
+  .el-table td, .el-table th.is-leaf{
+    border: none!important;
+  }
+  .form_box .el-form-item__content,
+  .form_box .el-form-item__label{
+    line-height: 26px!important;
+  }
+  .el-dialog{
+    min-width:800px;
+    margin: 0 auto;
+  }
+  .border_btn{
+    display: block;
+    position: relative;
+    top:10px;
+    margin-right: 20px;
+    padding-left:8px;
+    border:1px solid #28acc6;
+    width:90px;
+    height: 24px;
+    line-height: 24px;
+    font-size:14px;
+    background-image: url('/static/img/border_bg.png');
+    background-repeat: no-repeat;
+    background-position: 70px;
+    cursor: pointer;
+    color: #333;
+  }
+  .border_btn:hover{
+    background-color: rgba(40,172,198,0.1);
+  }
+</style>

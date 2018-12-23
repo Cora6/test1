@@ -4,10 +4,8 @@
     <el-main style="position: relative;border-left:1px solid #28acc6;">
       <div style="border:1px solid #28acc6;height: 40px;border-left-width:0px;border-bottom-width:0px;">
         <el-row style="padding-top: 8px;">
-          <div style="display: inline-block;padding-right:25px;border-right:1px solid #ccc;margin-right: 15px;height: 22px; ">
-            <span class="btn_def" style="margin-left:20px;" @click="handleCreate">+ 增仓</span>
-          </div>
-          <span class="btn_def" style="margin-left:5px;" @click="handleCreate">修改</span>
+          <span class="btn_def" style="margin-left:20px;" @click="handleCreate">+ 增加</span>
+          <span class="btn_def" style="margin-left:5px;">- 删除</span>
           <span v-if="!indent" class="btn_indent"  @click="indent=true"> >>缩进</span>
           <span v-if="indent" class="btn_indent"  @click="indent=false"> <<缩进</span>
         </el-row>
@@ -63,20 +61,20 @@
         <span class="fix_btn">固定收益<span class="point">12</span></span>
         <span class="fix_btn" style="border-top-width:0px;">股票<span class="point">3</span></span>
       </div>
-      <!--增仓弹窗-->
-      <el-dialog v-if="aa" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+      <!--增加弹窗-->
+      <el-dialog v-if="false" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
         <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="180px" style="width: 400px; margin-left:50px;">
           <el-form-item label="加入风险品种：" prop="type">
             <input class="input_line" style="display: inline-block;" value="000001"/>
             <span style="margin-left: 10px;">平安银行</span>
           </el-form-item>
           <el-form-item label="风险因素：" prop="type">
-            <el-select v-model="temp.type" class="filter-item" placeholder="请选择银行" style="width: 120px;top:-4px;" size="mini">
+            <el-select v-model="temp.type" class="filter-item" placeholder="风险因素" style="width: 120px;top:-4px;" size="mini">
               <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
             </el-select>
           </el-form-item>
           <el-form-item label="风险操作类型：" prop="type">
-            <el-select v-model="temp.type" class="filter-item" placeholder="请选择银行" style="width: 120px;top:-4px;" size="mini">
+            <el-select v-model="temp.type" class="filter-item" placeholder="增仓" style="width: 120px;top:-4px;" size="mini">
               <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
             </el-select>
           </el-form-item>
@@ -86,24 +84,12 @@
           <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">{{ $t('table.confirm') }}</el-button>
         </div>
       </el-dialog>
-      <!--减仓弹窗-->
-      <el-dialog v-if="!aa" :title="textMap2[dialogStatus]" :visible.sync="dialogFormVisible">
+      <!--删除弹窗-->
+      <el-dialog v-if="true" :title="textMap2[dialogStatus]" :visible.sync="dialogFormVisible">
         <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="180px" style="width: 400px; margin-left:50px;">
-          <el-form-item label="*拟减仓品种：" prop="type">
+          <el-form-item label="*删除风险品种：" prop="type">
             <input class="input_line" style="display: inline-block;" value="000001"/>
             <span style="margin-left: 20px;">平安银行</span>
-          </el-form-item>
-          <el-form-item label="*减仓顺序：">
-            <input class="input_line" style="display: inline-block;width: 50px!important;" value="01"/>
-          </el-form-item>
-          <el-form-item label="*执行开始日期：">
-            <el-date-picker
-              v-model="temp.date"
-              type="date"
-              placeholder="选择日期"
-              size="mini"
-              style="width: 210px;">
-            </el-date-picker>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -156,13 +142,12 @@ export default {
       dialogStatus: '',
       textMap: {
         update: 'Edit',
-        create: '增仓'
+        create: '增加'
       },
       textMap2: {
         update: 'Edit',
-        create: '减仓'
+        create: '删除'
       },
-      aa:true,
       dialogPvVisible: false,
       calendarTypeOptions,
       indent:true,

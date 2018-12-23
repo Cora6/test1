@@ -4,21 +4,13 @@
     <el-main style="position: relative;border-left:1px solid #28acc6;">
       <div style="border:1px solid #28acc6;height: 40px;border-left-width:0px;border-bottom-width:0px;">
         <el-row style="padding-top: 8px;">
-          <div style="display: inline-block;padding-right:25px;border-right:1px solid #ccc;margin-right: 15px;height: 22px; ">
-            <span class="btn_def" style="margin-left:20px;" @click="handleCreate">+ 增仓</span>
-          </div>
-          <span class="btn_def" style="margin-left:5px;" @click="handleCreate">修改</span>
+          <span class="btn_def" style="margin-left:20px;" @click="handleCreate">+ 增仓</span>
+          <span class="btn_def" style="margin-left:5px;" @click="handleCreate">- 减仓</span>
           <span v-if="!indent" class="btn_indent"  @click="indent=true"> >>缩进</span>
           <span v-if="indent" class="btn_indent"  @click="indent=false"> <<缩进</span>
         </el-row>
       </div>
-      <div style="border:1px solid #28acc6;min-height: 800px;border-left-width:0px;border-bottom-width:0px;padding: 20px;">
-        <div style="margin-bottom: 10px;">
-          <el-checkbox style="display: inline-block;margin-right: 20px;" :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-          <el-checkbox-group style="display: inline-block;" v-model="checkedCities" @change="handleCheckedCitiesChange">
-            <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
-          </el-checkbox-group>
-        </div>
+      <div style="border:1px solid #28acc6;height: 300px;border-left-width:0px;border-bottom-width:0px;padding: 20px;">
         <div style="border:2px solid #28acc6;">
           <el-table
             ref="singleTable"
@@ -27,50 +19,91 @@
             @current-change="handleCurrentChange"
             style="width: 100%">
             <el-table-column
-              type="selection"
-              width="55">
-            </el-table-column>
-            <el-table-column
-              property="num"
-              label="品种类型"
-              width="120"
-              align="left">
+              type="index"
+              label="序号"
+              width="50"
+              align="center">
             </el-table-column>
             <el-table-column
               property="num"
               label="品种代码"
-              width="120"
-              align="left">
+              width="80"
+              align="center">
             </el-table-column>
             <el-table-column
               property="name"
               label="品种名称"
-              width="120"
-              align="left">
+              width="100"
+              align="center">
             </el-table-column>
             <el-table-column
-              property="name"
-              label="策略类型"
-              width="120"
-              align="left">
+              property="ave"
+              label="平均成本"
+              width="80"
+              align="center">
             </el-table-column>
             <el-table-column
-              property="name"
-              label="执行开始日期"
-              width="120"
-              align="left">
+              property="act"
+              label="市值"
+              width="80"
+              align="center">
             </el-table-column>
             <el-table-column
-              property="name"
-              label="执行结束日期"
-              width="120"
-              align="left">
+              property="profit"
+              label="浮动盈亏"
+              align="center">
             </el-table-column>
             <el-table-column
               property="percent"
-              label="风险操作类型"
-              min-width="180"
-              align="left">
+              label="占固收市值比例"
+              align="center">
+            </el-table-column>
+            <el-table-column
+              property="order"
+              label="减仓顺序"
+              align="center">
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
+      <div style="border:1px solid #28acc6;min-height: 500px;border-left-width:0px;padding: 20px;">
+        <div style="border:2px solid #28acc6;">
+          <el-table
+            ref="singleTable"
+            :data="tableData"
+            highlight-current-row
+            @current-change="handleCurrentChange"
+            style="width: 100%">
+            <el-table-column
+              type="index"
+              label="序号"
+              width="50"
+              align="center">
+            </el-table-column>
+            <el-table-column
+              property="num"
+              label="交易类型"
+              align="center">
+            </el-table-column>
+            <el-table-column
+              property="name"
+              label="成交时间"
+              align="center">
+            </el-table-column>
+            <el-table-column
+              property="ave"
+              label="到期时间"
+              align="center">
+            </el-table-column>
+            <el-table-column
+              property="act"
+              label="成交价格"
+              align="center">
+            </el-table-column>
+            <el-table-column
+              property="profit"
+              label="手续费"
+              align="center">
             </el-table-column>
           </el-table>
         </div>
@@ -82,19 +115,28 @@
       <!--增仓弹窗-->
       <el-dialog v-if="aa" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
         <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="180px" style="width: 400px; margin-left:50px;">
-          <el-form-item label="加入风险品种：" prop="type">
+          <el-form-item label="*拟增仓品种：" prop="type">
             <input class="input_line" style="display: inline-block;" value="000001"/>
-            <span style="margin-left: 10px;">平安银行</span>
-          </el-form-item>
-          <el-form-item label="风险因素：" prop="type">
-            <el-select v-model="temp.type" class="filter-item" placeholder="请选择银行" style="width: 120px;top:-4px;" size="mini">
+            <el-select v-model="temp.type" class="filter-item" placeholder="请选择银行" style="width: 120px;top:-4px;margin-left: 6px;" size="mini">
               <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
             </el-select>
           </el-form-item>
-          <el-form-item label="风险操作类型：" prop="type">
-            <el-select v-model="temp.type" class="filter-item" placeholder="请选择银行" style="width: 120px;top:-4px;" size="mini">
-              <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
-            </el-select>
+          <el-form-item label="*增仓顺序：">
+            <input class="input_line" style="display: inline-block;width: 50px!important;" value="01"/>
+          </el-form-item>
+          <el-form-item label="*占固收资产市值比例：">
+            <input class="input_line" style="display: inline-block;width: 50px!important;" value="50"/>%
+            <span style="margin-left: 10px;">5000股</span>
+            <span style="margin-left: 10px;">50手</span>
+          </el-form-item>
+          <el-form-item label="*执行开始日期：">
+            <el-date-picker
+              v-model="temp.date"
+              type="date"
+              placeholder="选择日期"
+              size="mini"
+              style="width: 210px;">
+            </el-date-picker>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -154,16 +196,10 @@ const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
   return acc
 }, {})
 
-const cityOptions = ['增仓', '减仓', 'T仓', '做空','风险','打新','仓位'];
 export default {
-  name: 'index1',
+  name: 'Documentation',
   data() {
     return {
-      checkAll: false,
-      checkedCities: ['增仓', '减仓'],
-      cities: cityOptions,
-      isIndeterminate: true,
-
       temp: {
         id: undefined,
         importance: 1,
@@ -201,24 +237,13 @@ export default {
         ave:'10.9',
         act:'12.3',
         profit:'1.4',
-        percent: '50%',
+        percent: '-',
         name: '三二零',
         order: '02'
       }],
     }
   },
   methods: {
-    handleCheckAllChange(val) {
-      this.checkedCities = val ? cityOptions : [];
-      this.isIndeterminate = false;
-    },
-    handleCheckedCitiesChange(value) {
-      let checkedCount = value.length;
-      this.checkAll = checkedCount === this.cities.length;
-      this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
-    },
-
-
     resetTemp() {
       this.temp = {
         id: undefined,
